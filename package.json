@@ -1,0 +1,26 @@
+{
+  "name": "vuetest",
+  "version": "1.0.0",
+  "description": "environmental ",
+  "main": "index.js",
+  "scripts": {
+    "test": "testcommand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getSun/VueTest.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "luohua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/getSun/VueTest/issues"
+  },
+  "homepage": "https://github.com/getSun/VueTest#readme",
+  "devDependencies": {
+    "webpack": "^4.12.0",
+    "webpack-dev-server": "^3.1.4"
+  }
+}

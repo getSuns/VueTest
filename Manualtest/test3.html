@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>组件的高级用法</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div>
+				递归组件
+				<child-component></child-component>
+			</div>
+		</div>
+		<script>
+		//作用域插槽在2.5以后的版本已被更改
+			Vue.component("child-component",{
+				name:'child-component',
+				props:{
+					count:{
+						type:Number,
+						default:1
+					}
+				},
+				template:'\
+				<div class="child">\
+					<child-component :count="count+1" v-if="count<3"> {{count}}</child-component>\
+					</div>\
+				</div>',
+				data:function(){
+					return {
+						headercontent:''
+					}
+				},
+				mounted:function(){
+					this.headercontent=this.$slots.header;
+					console.log(this.$slots.header);
+				}
+			})
+
+			var app=new Vue({
+				el:"#app"
+			}) 
+			//未完待续
+		</script>
+	</body>
+</html>

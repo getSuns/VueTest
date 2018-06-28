@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>vuel练习</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" v-model="message"  placeholder="输入．．．">
+			<p>输入的内容是:{{message}} </p>
+			<div>
+				单选：{{checked}}
+				<p><input type="radio" v-model="checked" value="aa" />
+				<input type="radio" v-model="checked" value="bb" />
+				<input type="radio" v-model="checked" value="cc" /></p>
+			</div>
+			<div>
+				复选：{{checkbox1}}
+				<p><input type="checkbox" v-model="checkbox1" value="11" />
+				<input type="checkbox" v-model="checkbox1" value="22" />
+				<input type="checkbox" v-model="checkbox1" value="33" /></p>
+			</div>
+			<div>
+			<!-- 多选事需按shift -->
+				下拉框多选：{{selected}}
+				<p><select   v-model="selected" multiple>
+					<option value="多选1">多选1</option>
+					<option value="多选2">多选2</option>
+					<option value="多选3">多选3</option>
+				</select></p>
+			</div>
+			<div>
+				下拉框选中时为obj：{{selectedobj.text}}
+				<p><select   v-model="selectedobj">
+					<option :value="{text:'选1'}">选1</option>
+					<option :value="{text:'选2'}">选2</option>
+					<option :value="{text:'选3'}">选3</option>
+				</select></p>
+			</div>
+			<div>
+				组件学习
+				<my-component :ftext="ftextarr[0]":num="50"></my-component>
+				<my-component :ftext="ftextarr[1]"></my-component>
+				<my-component :ftext="ftextarr[2]"></my-component>
+			</div>
+			
+			<div>
+				组件传值
+				<button @click="childref">子ref触发</button>
+				<my-component2 @freduce="totalchange" @fadd="totalchange" v-model="xi" ref="com2"></my-component2>
+				<p>父连：<em>子组件获取父组件的值并更改为:{{parentmsg}}</em></p>
+				<p>total：{{total}} </p>
+				<p>input事件 v-model直接获取：{{xi}}</p>
+			</div>
+			<div>
+				父子组件双向<input v-model="childinput"/><em>{{childinput}}</em>
+				<my-component3  v-model="childinput"></my-component3>
+			</div>
+			<hr>
+			
+		</div> 
+		<script>
+
+			Vue.component('my-component',{
+				props:{num:{type:Number,default:20},ftext:String},
+				template:'<p>{{ftext}}<button @click="counter++" :style="numpx">{{counter}}</button>{{counter+pnum}}</p>',
+				data:function(){
+					return{
+						counter:1,
+						pnum:this.num
+					}
+				},
+				computed:{
+					numpx:function(){	
+						return {height: this.pnum+'px'}
+					}
+				}
+			})
+			var bus=new Vue();
+			Vue.component('my-component2',{
+				template:'<p><button @click="reduce">-</button>{{counter2}}<button @click="add">+</button><button @click="clickxi">按我直接用v-model显示嘻嘻嘻+n</button><button @click="busclick">bus传值到component3</button><button @click="parentmsgchang">父连触发</button><span>子组件ref：<em>父组件获取子组件的值并更改为:{{childmsg}}</em></span></p>',
+				data:function(){
+					return{
+						counter2:1,
+						xi:1,
+						childmsg:''
+					}
+				},
+				methods:{
+					reduce:function(){
+						this.counter2--;
+						this.$emit("freduce",this.counter2);
+					},
+					add:function(){
+						this.counter2++;
+						this.$emit("fadd",this.counter2);
+					},
+					//事件名必须为input才可以省略v-on用v-model
+					clickxi:function(){
+						this.xi++;
+						this.$emit("input","嘻嘻嘻"+this.xi);
+						
+					},
+					busclick:function(){
+						bus.$emit("busemit","我是my-component2的bus传值测试")
+					},
+					parentmsgchang:function(){
+						this.$parent.parentmsg="我被子组件parent改变了";
+					}
+				}
+			})
+			//条件 1接收一个 value 属性。 2在有新的 value 时触发 input 事件。 props名必须为value
+			Vue.component('my-component3',{
+				props:['value'],
+				template:'<p><input @input="inputevent" :value="value"/><em>bus传值：{{c2}}</em></p>',
+				data:function(){
+					return{
+						c2:''
+					}
+				},
+				mounted:function(){
+					var that=this;
+					bus.$on("busemit",function(msg){
+						that.c2=msg;
+					})
+				},
+				methods:{
+					inputevent:function(event){
+						this.$emit("input",event.target.value);
+					}
+				}
+			})
+			var app=new Vue({
+				el :"#app",
+				data: {
+					childinput:'',
+					xi:'',
+					total:0,
+					message:'',
+					checked:"bb",
+					checkbox1:["22","33"],
+					selected:["多选2","多选3"],
+					selectedobj:'',
+					ftextarr:['我是父组件过来的1','我是父组件过来的2','我是父组件过来的3'],
+					parentmsg:'',
+
+				},
+				methods:{
+					totalchange:function(counter){
+						this.total=counter;
+					},
+					childref:function(){
+						this.$refs.com2.childmsg="我被父组件ref更改了"; 
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

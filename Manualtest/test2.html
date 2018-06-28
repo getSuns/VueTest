@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>slot分发</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div>
+				简单分发演示
+				<child-component><p>主内容</p></child-component>
+				<hr>
+				<div>
+				<!-- 未成功 提示parentmsg未在实例化中定义 -->
+					<p>内联模板 {{parentmsg}}</p>
+					<child-component inline-template><div><h4>在父组件中定义子组件的模板</h4><p>{{parentmsg}}</p><p>{{childmsg}}</p></div></child-component>
+				</div>
+			</div>
+		</div>
+		<script>
+		//作用域插槽在2.5以后的版本已被更改
+			Vue.component("child-component",{
+				template:'\
+				<div>\
+					<div class="header"><slot name="header">\
+						<p>公用头部</p>\
+					</slot></div>\
+					<div class="main"><slot><p>暂无内容</p></slot></div>\
+					<div class="footer"><slot name="footer"><p>公用底部</p></slot></div>\
+				</div>',
+				data:function(){
+					return {
+						headercontent:'',
+						childmsg:"子组件数据"
+					}
+				},
+				mounted:function(){
+					this.headercontent=this.$slots.header;
+					console.log(this.$slots.header);
+				}
+			})
+
+			var app=new Vue({
+				el:"#app",
+				data:{
+					parentmsg:"父组件数据"
+				}
+			}) 
+		</script>
+	</body>
+</html>
