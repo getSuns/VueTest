@@ -41,3 +41,23 @@
 .tabs-content{
 	padding: 8px 0;
 }
+.closebtn{
+	background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 100%;
+    margin-left: 10px;
+    color: #ccc;
+    width: 20px;
+    cursor: pointer;
+}
+.pane{
+	    width: 200px;
+	transform: translateX(0px);
+}
+.css3translate{
+	transition: 5s;
+	transform: translateX(145px);
+}
+.translate0{
+	transform: translateX(0px);
+}

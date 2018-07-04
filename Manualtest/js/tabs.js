@@ -2,11 +2,12 @@ Vue.component('tabs',{
 	template:'\
 	<div class="tabs">\
 		<div class="tabs-bar">\
-		<div\
-			class="tabs-tab" :class="tabCls(item)"\
-			v-for="(item,index) in navList"\
-			@click="handleChange(index)">\
-			{{item.label}} <button v-if="closeshow">close</button>\
+			<div\
+				class="tabs-tab" :class="tabCls(item)"\
+				v-for="(item,index) in navList"\
+				@click="handleChange(index)">\
+				{{item.label}}\
+				<button class="closebtn" v-if="showClose(item)" @click.stop="handleclose(item,index)">x</button>\
 			</div>\
 		</div>\
 		<div class="tabs-content">\
@@ -16,7 +17,11 @@ Vue.component('tabs',{
 	props:{
 		value:{
 			type:[String,Number]
-		}
+		},
+		closable:{
+                type: Boolean,
+                default: false
+            }
 	},
 	data:function(){
 		return {
@@ -41,7 +46,8 @@ Vue.component('tabs',{
 			this.getTabs().forEach(function(pane,index){
 				_this.navList.push({
 					label:pane.label,
-					name:pane.name||index
+					name:pane.name||index,
+					closable:pane.closable
 				});
 				if(!pane.name)pane.name=index;
 				if (index===0) {
@@ -65,7 +71,40 @@ Vue.component('tabs',{
 			this.currentValue=name;
 			this.$emit('input',name);
 
-		}
+		},
+		handleclose:function(item,index){
+		  	const tabs = this.getTabs();
+            const tab = tabs[index];
+            tab.$destroy();
+            //debugger
+            if (tab.currentName === this.currentValue) {
+                const newTabs = this.getTabs();
+                let activeKey = -1;
+                if (newTabs.length) {
+                    const leftNoDisabledTabs = tabs.filter((item, itemIndex) =>  itemIndex < index);
+                    const rightNoDisabledTabs = tabs.filter((item, itemIndex) => itemIndex > index);
+                    if (rightNoDisabledTabs.length) {
+                        activeKey = rightNoDisabledTabs[0].name;
+                    } else if (leftNoDisabledTabs.length) {
+                        activeKey = leftNoDisabledTabs[leftNoDisabledTabs.length - 1].name;
+                    } else {
+                        activeKey = newTabs[0].name;
+                    }
+                }
+                this.activeKey = activeKey;
+                this.$emit('input', activeKey);
+            }
+            this.$emit('on-tab-remove',tab.currentName);
+			this.updateNav();
+
+		},
+		showClose (item) {
+            if (item.closable !== null) {
+                return item.closable;
+            } else {
+                return this.closable;
+            }
+        },
 	},
 	watch:{
 		value:function(val){
