@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>自定义指令练习</title>
+		<title>时间转换指令练习</title>
 		<link rel="stylesheet" type="text/css" href="css/clickoutside.css">
 	</head>
 	<body>
 		<div id="app" v-cloak>
-		<div v-clickoutside.esc='handleclose'>
-			<button @click="show=!show">下拉菜单显示</button>
-			<div v-show="show">
-				下拉菜单内容
-			</div>
-		</div>
+		<div v-time="timeNow"></div>
+		<div v-time="timeBefore"></div>
+		<div v-birthday="timeBirth"></div>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-		<script src="js/clickoutside.js"></script>
+		<script src="js/time.js"></script>
 		<script  type="text/javascript">
 			var app =new Vue({
 				el:"#app",
 				data:{
-					show:false
+					timeNow:(new Date().getTime()),
+					timeBefore:1488930695721,
+					timeBirth:1488930695721
 				},
 				methods:{
 					handleclose:function(){

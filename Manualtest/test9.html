@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<style type="text/css" >
+		button{
+			width: 100px;
+			border: 0;
+			border-radius: 3px;
+			padding: 5px 0;
+			margin-right: 10px;
+			color: #fff;
+		}
+		button[disabled="disabled"]{
+			color: #ccc;
+		}
+	</style>
+	<head>
+		<title>问卷调查</title>
+	</head>
+	<body>
+		<div id="app" v-cloak>
+		<div v-show=page1>  
+			<h4>请选择你的性别</h4>
+			<input type="radio" id="male" value="male" v-model="sex"><lable for="male">男</lable>
+			<input type="radio" id="female" value="female" v-model="sex"><lable for="female">女</lable>
+			<p><button-pet color="red" @click='Nextstop(1)' :disabled=disabled1 >下一步</button-pet><button-pet color="#ccc" @click='Resetmed(1)'>重置</button-pet></p>
+		</div>
+		<div v-show=page2>
+			<h4>请选择你的爱好</h4>
+			<input type="checkbox" id="book" value="book" v-model="hobby"><lable for="book">看书</lable>
+			<input type="checkbox" id="write" value="write" v-model="hobby"><lable for="write">写字</lable>
+			<input type="checkbox" id="run" value="run" v-model="hobby"><lable for="run">跑步</lable>
+			<input type="checkbox" id="cook" value="cook" v-model="hobby"><lable for="cook">烘培</lable>
+			<p><button-pet color="red" @click='Nextstop(3)'>上一步</button-pet><button-pet color="red" @click='Nextstop(2)' :disabled=disabled2 >下一步</button-pet><button-pet color="#ccc" @click='Resetmed(2)'>重置</button-pet></p>
+		</div>
+		<div v-show=page3>
+			<h4>请介绍一下你自己</h4>
+			<textarea placeholder="不少于10个字" v-model="introducetext"></textarea>
+			<p><button-pet color="red" @click='Nextstop(1)'>上一步</button-pet>
+			<button-pet color="#ccc" @click='Resetmed(3)'>重置</button-pet>
+			<button-pet color="red" @click='sumbit(3)' :disabled=disabled3 >提交</button-pet></p>
+		</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<script src="js/questionnaire.js"></script>
+		<script  type="text/javascript">
+			var app =new Vue({
+				el:"#app",
+				data:{
+					page1:true,
+					page2:false,
+					page3:false,
+					sex:'',
+					hobby:[],
+					introducetext:'',
+					disabled1:"disabled",
+					disabled2:"disabled",
+					disabled3:"disabled"
+				},
+				watch:{
+					sex:function(val){
+						if (val) {
+							this.disabled1=false;
+						}
+					},
+					hobby:function(val){
+						if (val.length>1) {
+							this.disabled2=false;
+						}
+					},
+					introducetext:function(val){
+						if (val.length>10) {
+							this.disabled3=false;
+						}
+					}
+
+				},
+				methods:{
+					Resetmed:function(num){
+						if (num==1) {
+							this.sex='';
+						}else if(num==2){
+							this.hobby=[];
+						}else if(num==3){
+							this.introducetext='';
+						}
+					},
+					Nextstop:function(num){
+						if (num==1) {
+							this.page1=false;
+							this.page2=true;
+							this.page3=false;
+						}else if(num==2){
+							this.page1=false;
+							this.page2=false;
+							this.page3=true;
+						}else if(num==3){
+							this.page3=false;
+							this.page2=false;
+							this.page1=true;
+						}
+					},
+					sumbit:function(){
+						alert("性别："+this.sex+" 爱好："+this.hobby+" \n "+this.introducetext);
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
